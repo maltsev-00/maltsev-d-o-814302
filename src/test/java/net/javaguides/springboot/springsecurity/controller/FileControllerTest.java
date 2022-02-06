@@ -45,6 +45,8 @@ public class FileControllerTest {
     @WithMockUser(roles = "USER")
     public void testAllFiles() throws Exception {
         mockMvc.perform(get("/files"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
@@ -53,6 +55,8 @@ public class FileControllerTest {
     @WithMockUser(roles = "USER")
     public void testDeleteFile() throws Exception {
         mockMvc.perform(delete("/files/" + id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
@@ -61,6 +65,8 @@ public class FileControllerTest {
     @WithMockUser(roles = "USER")
     public void testGetFile() throws Exception {
         mockMvc.perform(get("/files/" + id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
