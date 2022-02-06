@@ -78,7 +78,7 @@ public class FileController {
     }
 
     @PostMapping("search")
-    public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto, Model model) {
+    public List<PathFile> search(@RequestBody SearchPathFileDto searchPathFileDto, Model model) {
         return pathFileService.findByNameAndUsername(searchPathFileDto.getName(), email);
     }
 

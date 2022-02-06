@@ -17,9 +17,7 @@ public class CommentServiceImplTest extends TestCase {
 
     @Test
     void checkConverterComment() {
-
         CommentResponse commentDto = commentConverter.convertToToResponse(getComment());
-
         assertNotNull(commentDto.getMessage(), getComment().getMessage());
         assertNotNull(commentDto.getEmail(), getComment().getEmail());
     }

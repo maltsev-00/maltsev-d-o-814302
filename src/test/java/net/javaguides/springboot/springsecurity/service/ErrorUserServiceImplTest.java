@@ -38,13 +38,12 @@ public class ErrorUserServiceImplTest {
         pathFile.setId(2L);
         pathFile.setInfoFile(new InfoFile());
 
-
         //when
         List<PathFile> pathFiles = pathFileRepository.findAll();
 
         //then
         assertThat(pathFiles.size()).isEqualTo(1);
-        assertThat(pathFiles.get(7)).isEqualTo(pathFile);
+        assertThat(pathFiles.get(1)).isEqualTo(pathFile);
     }
 
 }

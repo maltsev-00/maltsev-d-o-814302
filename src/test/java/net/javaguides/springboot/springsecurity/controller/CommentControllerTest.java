@@ -1,6 +1,6 @@
 package net.javaguides.springboot.springsecurity.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,18 +8,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FileControllerTest {
+public class CommentControllerTest extends TestCase {
 
     @Autowired
     private MockMvc mockMvc;
@@ -27,11 +26,7 @@ public class FileControllerTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    long id = 2L;
-    String name = "jpg";
+    private long idFilepath = 2L;
 
     @BeforeEach
     void printApplicationContext() {
@@ -43,42 +38,18 @@ public class FileControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void testAllFiles() throws Exception {
-        mockMvc.perform(get("/files"))
+    public void testSaveComment() throws Exception {
+
+        mockMvc.perform(post("/files/comment/" + idFilepath))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(roles = "USER")
-    public void testDeleteFile() throws Exception {
-        mockMvc.perform(delete("/files/" + id))
+    public void testGetComments() throws Exception {
+        mockMvc.perform(get("/files/comment/" + idFilepath))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(roles = "USER")
-    public void testGetFile() throws Exception {
-        mockMvc.perform(get("/files/" + id))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(roles = "USER")
-    public void testChangePrivacy() throws Exception {
-        mockMvc.perform(get("/files/privacy/" + id))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(roles = "USER")
-    public void testSortByName() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/files/privacy/" + name))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-
     }
 }
