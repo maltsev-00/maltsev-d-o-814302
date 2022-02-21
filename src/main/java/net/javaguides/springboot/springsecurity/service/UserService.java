@@ -8,4 +8,7 @@ public interface UserService {
     User findByEmail(String email);
 
     User save(UserRegistrationDto registration);
+    User findByEmailAndPassword(String email, String password);
+    User getByEmail(String email);
+
 }

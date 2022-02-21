@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("files/comment")
 @Slf4j
@@ -32,7 +32,7 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public List<CommentResponse> getComments(@PathVariable("id") Long id, Model model) {
+    public List<CommentResponse> getComments(@PathVariable("id") Long id) {
         log.info("Get comments with id: {}", id.toString());
         userLogService.saveLog(id.toString(), email);
         return commentService.findById(id);

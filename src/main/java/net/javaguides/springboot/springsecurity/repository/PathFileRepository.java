@@ -13,4 +13,7 @@ public interface PathFileRepository extends JpaRepository<PathFile, Long> {
              String path,
              String type,
              String username);
+    PathFile findByPathContaining(String path);
+
+    PathFile findByNameContaining(String name);
 }

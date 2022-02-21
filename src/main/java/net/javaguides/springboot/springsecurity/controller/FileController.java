@@ -2,6 +2,8 @@ package net.javaguides.springboot.springsecurity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javaguides.springboot.springsecurity.model.PathFileRequestData;
+import net.javaguides.springboot.springsecurity.model.PathFileResponse;
 import net.javaguides.springboot.springsecurity.model.dto.CommentDto;
 import net.javaguides.springboot.springsecurity.model.dto.SearchPathFileDto;
 import net.javaguides.springboot.springsecurity.model.entity.PathFile;
@@ -51,17 +53,22 @@ public class FileController {
         pathFileService.deleteFile(id, email);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public void handleFileUpload(@RequestParam("file") MultipartFile file) {
         userLogService.saveLog(file.getOriginalFilename(), email);
         storageService.store(file, email);
+    }
+
+    @PostMapping("/data")
+    public PathFileResponse getData(@RequestBody PathFileRequestData pathFileRequestData) {
+        return storageService.getDataFile(pathFileRequestData);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<InputStreamResource> getFile(@PathVariable("id") Long id) {
         File file = fileDownloadServiceImpl.getFile(id);
         log.info("Download file: {}", file.getName());
-        userLogService.saveLog(id.toString(), "qwe.maltsev666@gmail.com");
+        userLogService.saveLog(id.toString(), email);
         InputStreamResource isResource = fileDownloadServiceImpl.getInputStreamResource(file);
         var fileSystemResource = new FileSystemResource(file);
         String fileName = FilenameUtils.getName(file.getAbsolutePath());
@@ -73,14 +80,15 @@ public class FileController {
     @GetMapping("privacy/{id}")
     public void changePrivacy(@PathVariable("id") Long id) {
         log.info("Change privacy with id: {}", id);
-        userLogService.saveLog(id.toString(), "qwe.maltsev666@gmail.com");
-        pathFileService.changePrivacy(id, "qwe.maltsev666@gmail.com");
+        userLogService.saveLog(id.toString(), email);
+        pathFileService.changePrivacy(id, email);
     }
 
     @PostMapping("search")
-    public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto, Model model) {
+    public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto) {
         return pathFileService.findByNameAndUsername(searchPathFileDto.getName(), email);
     }
+
 
     private HttpHeaders getHeader(FileSystemResource fileSystemResource, String fileName) {
         var headers = new HttpHeaders();

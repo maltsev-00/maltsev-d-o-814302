@@ -1,6 +1,8 @@
 package net.javaguides.springboot.springsecurity.service;
 
 import lombok.RequiredArgsConstructor;
+import net.javaguides.springboot.springsecurity.model.PathFileRequestData;
+import net.javaguides.springboot.springsecurity.model.PathFileResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,5 +44,10 @@ public class StorageServiceImpl implements StorageService {
         } catch (IOException e) {
             errorUserService.save(e.getMessage(), username);
         }
+    }
+
+    @Override
+    public PathFileResponse getDataFile(PathFileRequestData pathFileRequestData) {
+        return pathFileService.getData(pathFileRequestData.getName());
     }
 }

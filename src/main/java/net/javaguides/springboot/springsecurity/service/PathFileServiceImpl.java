@@ -2,7 +2,11 @@ package net.javaguides.springboot.springsecurity.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.javaguides.springboot.springsecurity.model.PackageDto;
+import net.javaguides.springboot.springsecurity.model.PathFileResponse;
+import net.javaguides.springboot.springsecurity.model.dto.ChangePackageRequest;
 import net.javaguides.springboot.springsecurity.model.entity.InfoFile;
 import net.javaguides.springboot.springsecurity.model.entity.PathFile;
 import net.javaguides.springboot.springsecurity.model.entity.StatisticsFile;
@@ -12,7 +16,9 @@ import net.javaguides.springboot.springsecurity.util.DateUtil;
 import net.javaguides.springboot.springsecurity.util.FormatFileUtil;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 import java.util.Set;
 
@@ -94,4 +100,43 @@ public class PathFileServiceImpl implements PathFileService {
         return pathFileRepository.findPathFileByNameContainingOrPathContainingOrInfoFileTypeContainingAndInfoFileUsername(name, name, name, username);
     }
 
+    @Override
+    public PathFileResponse getData(String name) {
+        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
+        return PathFileResponse.builder()
+                .text(getText(pathFile.getPath()))
+                .build();
+    }
+
+    @Override
+    public PackageDto getPath(String name) {
+        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
+        return PackageDto.builder()
+                .path(pathFile.getPath())
+                .build();
+    }
+
+    @Override
+    public void deletePackage(String name) {
+        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
+        pathFile.setPath("");
+        pathFileRepository.save(pathFile);
+    }
+
+    @Override
+    public void changePackage(ChangePackageRequest changePackageRequest) {
+        PathFile pathFile = pathFileRepository.findByPathContaining(changePackageRequest.getOldPath());
+        pathFile.setPath(changePackageRequest.getNewPath());
+        pathFileRepository.save(pathFile);
+    }
+
+    @SneakyThrows
+    private String getText(String path) {
+        String text = "";
+        File f = new File(path);
+        BufferedReader fin = new BufferedReader(new FileReader(f));
+        String line;
+        while ((line = fin.readLine()) != null) text += text + line;
+        return text;
+    }
 }
