@@ -16,7 +16,7 @@ public class PackageController {
 
     @GetMapping("{name}")
     public PackageDto getPath(@PathVariable("name") String name, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         return pathFileService.getPath(name);
@@ -24,7 +24,7 @@ public class PackageController {
 
     @DeleteMapping("{name}")
     public void deletePackage(@PathVariable("name") String name, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         pathFileService.deletePackage(name);
@@ -32,7 +32,7 @@ public class PackageController {
 
     @PutMapping
     public void changePackage(@RequestBody ChangePackageRequest changePackageRequest, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         pathFileService.changePackage(changePackageRequest);

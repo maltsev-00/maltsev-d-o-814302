@@ -3,7 +3,6 @@ package net.javaguides.springboot.springsecurity.controller;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import net.javaguides.springboot.springsecurity.ForbiddenException;
 import net.javaguides.springboot.springsecurity.model.dto.LoginRequest;
 import net.javaguides.springboot.springsecurity.model.dto.UserRegistrationDto;
 import net.javaguides.springboot.springsecurity.model.entity.User;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
@@ -33,7 +31,6 @@ public class UserRegistrationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-
         User user = userService.findByEmailAndPassword(loginRequest.getLogin(), loginRequest.getPassword());
         if (user != null) {
             return new ResponseEntity<>(generateToken(user.getEmail()), HttpStatus.OK);

@@ -45,8 +45,8 @@ public class FileController {
     private String email;
 
     @GetMapping
-    public List<PathFile> allFiles( @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+    public List<PathFile> allFiles(@RequestHeader("token") String token) {
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         return pathFileService.getPathList(email);
@@ -54,7 +54,7 @@ public class FileController {
 
     @DeleteMapping("{id}")
     public void deleteFile(@PathVariable("id") Long id, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         pathFileService.deleteFile(id, email);
@@ -62,7 +62,7 @@ public class FileController {
 
     @PostMapping
     public void handleFileUpload(@RequestParam("file") MultipartFile file, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         userLogService.saveLog(file.getOriginalFilename(), email);
@@ -71,7 +71,7 @@ public class FileController {
 
     @PostMapping("/data")
     public PathFileResponse getData(@RequestBody PathFileRequestData pathFileRequestData, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         return storageService.getDataFile(pathFileRequestData);
@@ -79,7 +79,7 @@ public class FileController {
 
     @GetMapping("{id}")
     public ResponseEntity<InputStreamResource> getFile(@PathVariable("id") Long id, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         File file = fileDownloadServiceImpl.getFile(id);
@@ -95,7 +95,7 @@ public class FileController {
 
     @GetMapping("privacy/{id}")
     public void changePrivacy(@PathVariable("id") Long id, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         log.info("Change privacy with id: {}", id);
@@ -105,7 +105,7 @@ public class FileController {
 
     @PostMapping("search")
     public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         return pathFileService.findByNameAndUsername(searchPathFileDto.getName(), email);

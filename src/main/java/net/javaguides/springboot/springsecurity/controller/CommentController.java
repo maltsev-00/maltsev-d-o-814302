@@ -8,8 +8,6 @@ import net.javaguides.springboot.springsecurity.model.response.CommentResponse;
 import net.javaguides.springboot.springsecurity.service.CommentService;
 import net.javaguides.springboot.springsecurity.service.UserLogService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +25,7 @@ public class CommentController {
 
     @PostMapping("{id}")
     public void saveComment(@RequestBody CommentDto comment, @PathVariable("id") Long id, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         log.info("Save comment with message:{}", comment.getMessage());
@@ -37,7 +35,7 @@ public class CommentController {
 
     @GetMapping("/{id}")
     public List<CommentResponse> getComments(@PathVariable("id") Long id, @RequestHeader("token") String token) {
-        if(token.isEmpty()){
+        if (token.isEmpty()) {
             throw new ForbiddenException("Token is null");
         }
         log.info("Get comments with id: {}", id.toString());
