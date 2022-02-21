@@ -3,6 +3,7 @@ package net.javaguides.springboot.springsecurity.controller;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import net.javaguides.springboot.springsecurity.ForbiddenException;
 import net.javaguides.springboot.springsecurity.model.dto.LoginRequest;
 import net.javaguides.springboot.springsecurity.model.dto.UserRegistrationDto;
 import net.javaguides.springboot.springsecurity.model.entity.User;
@@ -11,10 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
@@ -33,6 +33,7 @@ public class UserRegistrationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+
         User user = userService.findByEmailAndPassword(loginRequest.getLogin(), loginRequest.getPassword());
         if (user != null) {
             return new ResponseEntity<>(generateToken(user.getEmail()), HttpStatus.OK);
@@ -41,20 +42,14 @@ public class UserRegistrationController {
     }
 
     @PostMapping
-    public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto userDto,
-                                      BindingResult result) {
+    public ResponseEntity<String> registerUserAccount(@RequestBody UserRegistrationDto userDto) {
 
         User existing = userService.findByEmail(userDto.getEmail());
         if (existing != null) {
-            result.rejectValue("email", null, "There is already an account registered with that email");
+            return new ResponseEntity<>("User is found", HttpStatus.NOT_FOUND);
         }
-
-        if (result.hasErrors()) {
-            return "registration";
-        }
-
         userService.save(userDto);
-        return "redirect:/registration?success";
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     public String generateToken(String login) {

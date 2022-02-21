@@ -31,8 +31,6 @@ public class UserServiceImpl implements UserService, UserUploadService {
     @Override
     public User save(UserRegistrationDto registration) {
         User user = new User();
-        user.setFirstName(registration.getFirstName());
-        user.setLastName(registration.getLastName());
         user.setEmail(registration.getEmail());
         user.setRoles(List.of(new Role("ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(registration.getPassword()));

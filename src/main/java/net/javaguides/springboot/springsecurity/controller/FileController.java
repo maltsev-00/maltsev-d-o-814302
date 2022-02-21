@@ -2,6 +2,7 @@ package net.javaguides.springboot.springsecurity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javaguides.springboot.springsecurity.ForbiddenException;
 import net.javaguides.springboot.springsecurity.model.PathFileRequestData;
 import net.javaguides.springboot.springsecurity.model.PathFileResponse;
 import net.javaguides.springboot.springsecurity.model.dto.CommentDto;
@@ -44,28 +45,43 @@ public class FileController {
     private String email;
 
     @GetMapping
-    public List<PathFile> allFiles() {
+    public List<PathFile> allFiles( @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         return pathFileService.getPathList(email);
     }
 
     @DeleteMapping("{id}")
-    public void deleteFile(@PathVariable("id") Long id) {
+    public void deleteFile(@PathVariable("id") Long id, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         pathFileService.deleteFile(id, email);
     }
 
     @PostMapping
-    public void handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public void handleFileUpload(@RequestParam("file") MultipartFile file, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         userLogService.saveLog(file.getOriginalFilename(), email);
         storageService.store(file, email);
     }
 
     @PostMapping("/data")
-    public PathFileResponse getData(@RequestBody PathFileRequestData pathFileRequestData) {
+    public PathFileResponse getData(@RequestBody PathFileRequestData pathFileRequestData, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         return storageService.getDataFile(pathFileRequestData);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<InputStreamResource> getFile(@PathVariable("id") Long id) {
+    public ResponseEntity<InputStreamResource> getFile(@PathVariable("id") Long id, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         File file = fileDownloadServiceImpl.getFile(id);
         log.info("Download file: {}", file.getName());
         userLogService.saveLog(id.toString(), email);
@@ -78,14 +94,20 @@ public class FileController {
     }
 
     @GetMapping("privacy/{id}")
-    public void changePrivacy(@PathVariable("id") Long id) {
+    public void changePrivacy(@PathVariable("id") Long id, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         log.info("Change privacy with id: {}", id);
         userLogService.saveLog(id.toString(), email);
         pathFileService.changePrivacy(id, email);
     }
 
     @PostMapping("search")
-    public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto) {
+    public List<PathFile> sortByName(@RequestBody SearchPathFileDto searchPathFileDto, @RequestHeader("token") String token) {
+        if(token.isEmpty()){
+            throw new ForbiddenException("Token is null");
+        }
         return pathFileService.findByNameAndUsername(searchPathFileDto.getName(), email);
     }
 
