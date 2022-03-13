@@ -3,31 +3,11 @@ package net.javaguides.springboot.springsecurity.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javaguides.springboot.springsecurity.ForbiddenException;
-import net.javaguides.springboot.springsecurity.model.PathFileRequestData;
-import net.javaguides.springboot.springsecurity.model.PathFileResponse;
-import net.javaguides.springboot.springsecurity.model.dto.CommentDto;
-import net.javaguides.springboot.springsecurity.model.dto.SearchPathFileDto;
 import net.javaguides.springboot.springsecurity.model.entity.HairCut;
 import net.javaguides.springboot.springsecurity.service.PathFileService;
-import net.javaguides.springboot.springsecurity.service.StorageService;
-import net.javaguides.springboot.springsecurity.service.UploadFileImpl;
-import net.javaguides.springboot.springsecurity.service.UserLogService;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -36,9 +16,7 @@ import java.util.List;
 @RequestMapping("har-cut")
 public class ControlHairCutController {
 
-    private final StorageService storageService;
     private final PathFileService pathFileService;
-    private final UploadFileImpl fileDownloadServiceImpl;
 
     @Value("${email}")
     private String email;
