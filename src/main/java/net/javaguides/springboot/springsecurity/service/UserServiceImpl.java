@@ -1,6 +1,7 @@
 package net.javaguides.springboot.springsecurity.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.javaguides.springboot.springsecurity.model.dto.UserRegistrationDto;
 import net.javaguides.springboot.springsecurity.model.entity.Role;
 import net.javaguides.springboot.springsecurity.model.entity.User;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService, UserUploadService {
 
     private final UserRepository userRepository;
@@ -20,7 +22,10 @@ public class UserServiceImpl implements UserService, UserUploadService {
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+        log.error(email);
+
+        log.info("+--");
+        return userRepository.findByEmail(email);
     }
 
     @Override

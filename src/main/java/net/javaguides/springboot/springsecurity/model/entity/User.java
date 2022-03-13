@@ -27,7 +27,7 @@ public class User {
     private String password;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Set<PathFile> pathFiles = new HashSet<>();
+    private Set<HairCut> hairCuts = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

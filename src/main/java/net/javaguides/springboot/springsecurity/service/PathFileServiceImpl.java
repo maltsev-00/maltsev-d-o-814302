@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.javaguides.springboot.springsecurity.model.PackageDto;
 import net.javaguides.springboot.springsecurity.model.PathFileResponse;
 import net.javaguides.springboot.springsecurity.model.dto.ChangePackageRequest;
+import net.javaguides.springboot.springsecurity.model.entity.HairCut;
 import net.javaguides.springboot.springsecurity.model.entity.InfoFile;
-import net.javaguides.springboot.springsecurity.model.entity.PathFile;
 import net.javaguides.springboot.springsecurity.model.entity.StatisticsFile;
 import net.javaguides.springboot.springsecurity.model.entity.User;
-import net.javaguides.springboot.springsecurity.repository.PathFileRepository;
+import net.javaguides.springboot.springsecurity.repository.HairCutRepository;
 import net.javaguides.springboot.springsecurity.util.DateUtil;
 import net.javaguides.springboot.springsecurity.util.FormatFileUtil;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ import java.util.Set;
 public class PathFileServiceImpl implements PathFileService {
 
     private final UserUploadService userUploadService;
-    private final PathFileRepository pathFileRepository;
+    private final HairCutRepository hairCutRepository;
     private final DateUtil dateUtil;
     private final FormatFileUtil formatFileUtil;
     private final ErrorUserService errorUserService;
@@ -43,7 +42,7 @@ public class PathFileServiceImpl implements PathFileService {
                 .username(email)
                 .time(dateUtil.getLocalDate())
                 .build();
-        PathFile pathFile = PathFile.builder()
+        HairCut hairCut = HairCut.builder()
                 .infoFile(infoFile)
                 .path(path)
                 .statisticsFile(StatisticsFile.builder()
@@ -53,81 +52,71 @@ public class PathFileServiceImpl implements PathFileService {
                 .name(fileName)
                 .build();
         User user = userUploadService.getByEmail(email);
-        user.getPathFiles().add(pathFile);
+        user.getHairCuts().add(hairCut);
         userUploadService.save(user);
     }
 
     @Override
-    public List<PathFile> getPathList(String email) {
-        User user = userUploadService.getByEmail(email);
-        List<PathFile> pathFileList = pathFileRepository.findPathFileByPrivacy(true);
-        Set<PathFile> pathFiles = user.getPathFiles();
-        pathFiles.addAll(pathFileList);
-        return List.copyOf(pathFiles);
+    public List<HairCut> getHairCutList() {
+        return hairCutRepository.findAll();
     }
 
     @Override
     public void changePrivacy(Long id, String username) {
         User user = userUploadService.getByEmail(username);
-        PathFile pathFile = pathFileRepository.getOne(id);
-        if (pathFile.getInfoFile().getUsername().equals(user.getEmail())) {
-            pathFile.setPrivacy(!pathFile.getPrivacy());
-            pathFileRepository.save(pathFile);
+        HairCut hairCut = hairCutRepository.getOne(id);
+        if (hairCut.getInfoFile().getUsername().equals(user.getEmail())) {
+            hairCut.setPrivacy(!hairCut.getPrivacy());
+            hairCutRepository.save(hairCut);
         } else {
             errorUserService.save(USER_NOT_CONFIRM_ERROR_MESSAGE, username);
         }
     }
 
     @Override
-    public void deleteFile(Long id, String name) {
-        PathFile pathFile = pathFileRepository.getOne(id);
-        String username = pathFile.getInfoFile().getUsername();
-        if (name.equals(username)) {
-            File file = new File(pathFile.getPath());
-            if (file.delete()) {
-                log.info("File deleted successfully");
-            } else {
-                errorUserService.save(FILE_IS_NOT_FOUND_MESSAGE, username);
-            }
-            pathFileRepository.delete(pathFile);
-        } else {
-            errorUserService.save(USER_NOT_CONFIRM_ERROR_MESSAGE, username);
-        }
+    public void deleteHairCutService(Long id) {
+        HairCut hairCut = hairCutRepository.getOne(id);
+        hairCutRepository.delete(hairCut);
     }
 
     @Override
-    public List<PathFile> findByNameAndUsername(String name, String username) {
-        return pathFileRepository.findPathFileByNameContainingOrPathContainingOrInfoFileTypeContainingAndInfoFileUsername(name, name, name, username);
+    public List<HairCut> findByNameAndUsername(String name, String username) {
+        return hairCutRepository.findPathFileByNameContainingOrPathContainingOrInfoFileTypeContainingAndInfoFileUsername(name, name, name, username);
     }
 
     @Override
     public PathFileResponse getData(String name) {
-        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
+        HairCut hairCut = hairCutRepository.findByNameContaining(name.toLowerCase());
         return PathFileResponse.builder()
-                .text(getText(pathFile.getPath()))
+                .text(getText(hairCut.getPath()))
                 .build();
     }
 
     @Override
     public PackageDto getPath(String name) {
-        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
+        HairCut hairCut = hairCutRepository.findByNameContaining(name.toLowerCase());
         return PackageDto.builder()
-                .path(pathFile.getPath())
+                .path(hairCut.getPath())
                 .build();
     }
 
     @Override
     public void deletePackage(String name) {
-        PathFile pathFile = pathFileRepository.findByNameContaining(name.toLowerCase());
-        pathFile.setPath("");
-        pathFileRepository.save(pathFile);
+        HairCut hairCut = hairCutRepository.findByNameContaining(name.toLowerCase());
+        hairCut.setPath("");
+        hairCutRepository.save(hairCut);
     }
 
     @Override
     public void changePackage(ChangePackageRequest changePackageRequest) {
-        PathFile pathFile = pathFileRepository.findByPathContaining(changePackageRequest.getOldPath());
-        pathFile.setPath(changePackageRequest.getNewPath());
-        pathFileRepository.save(pathFile);
+        HairCut hairCut = hairCutRepository.findByPathContaining(changePackageRequest.getOldPath());
+        hairCut.setPath(changePackageRequest.getNewPath());
+        hairCutRepository.save(hairCut);
+    }
+
+    @Override
+    public void save(HairCut hairCut) {
+        hairCutRepository.save(hairCut);
     }
 
     @SneakyThrows

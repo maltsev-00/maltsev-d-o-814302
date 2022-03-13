@@ -3,7 +3,7 @@ package net.javaguides.springboot.springsecurity.service;
 import net.javaguides.springboot.springsecurity.model.PackageDto;
 import net.javaguides.springboot.springsecurity.model.PathFileResponse;
 import net.javaguides.springboot.springsecurity.model.dto.ChangePackageRequest;
-import net.javaguides.springboot.springsecurity.model.entity.PathFile;
+import net.javaguides.springboot.springsecurity.model.entity.HairCut;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ public interface PathFileService {
 
     void save(String path,String email,String fileName);
 
-    List<PathFile> getPathList(String email);
+    List<HairCut> getHairCutList();
 
     void changePrivacy(Long id,String username);
 
-    void deleteFile(Long id,String name);
+    void deleteHairCutService(Long id);
 
-    List<PathFile> findByNameAndUsername(String name, String username);
+    List<HairCut> findByNameAndUsername(String name, String username);
 
     PathFileResponse getData(String name);
 
@@ -26,4 +26,6 @@ public interface PathFileService {
     void deletePackage(String name);
 
     void changePackage(ChangePackageRequest changePackageRequest);
+
+    void save(HairCut hairCut);
 }
